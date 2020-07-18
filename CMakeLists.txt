@@ -1,6 +1,6 @@
 ﻿cmake_minimum_required (VERSION 3.8)
 
-project ("GM3p")
+project ("gm3p" CXX)
 
 set(GMP_INCLUDE_DIR "" CACHE PATH "Path to the directory containing 'gmp.h'")
 
@@ -29,3 +29,6 @@ target_link_libraries(gm3p PUBLIC
 if(ENABLE_TEST_PROJ)
 	add_subdirectory(testapp)
 endif()
+
+install(TARGETS gm3p DESTINATION lib)
+install(DIRECTORY include DESTINATION .)

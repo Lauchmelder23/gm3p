@@ -1,5 +1,7 @@
 .vs
+.vscode
 out
+build
 3rdparty
 
 *.json

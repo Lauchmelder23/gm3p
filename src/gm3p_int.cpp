@@ -13,6 +13,12 @@ namespace gm3p
 		mpz_set(value, init);
 	}
 
+	gInt::gInt(unsigned long int init) :
+		gInt::gInt()
+	{
+		mpz_set_ui(value, init);
+	}
+
 	gInt::gInt(long int init) :
 		gInt::gInt()
 	{
@@ -30,10 +36,15 @@ namespace gm3p
 		mpz_clear(value);
 	}
 
+
+
+
 	gInt& gInt::operator=(const gInt& other)
 	{
 		mpz_set(this->value, other.value);
 	}
+
+
 
 	gInt operator+(const gInt& left, const gInt& right)
 	{
@@ -62,6 +73,34 @@ namespace gm3p
 		mpz_div(ret.value, left.value, right.value);
 		return ret;
 	}
+
+
+
+	gInt& gInt::operator+=(const gInt& right)
+	{
+		mpz_add(value, value, right.value);
+		return *this;
+	}
+
+	gInt& gInt::operator-=(const gInt& right)
+	{
+		mpz_sub(value, value, right.value);
+		return *this;
+	}
+
+	gInt& gInt::operator*=(const gInt& right)
+	{
+		mpz_mul(value, value, right.value);
+		return *this;
+	}
+
+	gInt& gInt::operator/=(const gInt& right)
+	{
+		mpz_div(value, value, right.value);
+		return *this;
+	}
+
+
 	std::ostream& operator<<(std::ostream& os, const gInt& value)
 	{
 		static char* buf;
