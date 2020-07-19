@@ -24,12 +24,6 @@ namespace gm3p
 		mpz_set_f(value, init);
 	}
 
-	gInt::gInt(unsigned long int init) :
-		gInt::gInt()
-	{
-		mpz_init_set_ui(value, init);
-	}
-
 	gInt::gInt(long int init) :
 		gInt::gInt()
 	{
@@ -42,77 +36,69 @@ namespace gm3p
 		mpz_init_set_str(value, init, base);
 	}
 
-	gInt::gInt(double init)
-	{
-		mpz_init_set_d(value, init);
-	}
-
-
 	gInt::~gInt()
 	{
 		mpz_clear(value);
 	}
 
-
-
-
 	gInt& gInt::operator=(const gInt& other)
 	{
-		mpz_set(this->value, other.value);
+		mpz_set(*this, const_cast<gInt&>(other));
 		return *this;
 	}
 
 	gInt::gInt(const gInt& other)
 	{
-		mpz_set(this->value, other.value);
+		mpz_set(*this, const_cast<gInt&>(other));
 	}
 
 	gInt::gInt(gInt&& other)
 	{
-		mpz_set(this->value, other.value);
+		mpz_set(*this, const_cast<gInt&>(other));
 	}
 
-
+	gInt operator-(const gInt& value)
+	{
+		return Neg(value);
+	}
 
 	gInt operator+(const gInt& left, const gInt& right)
 	{
 		gInt ret;
-		mpz_add(ret.value, left.value, right.value);
+		mpz_add(ret, const_cast<gInt&>(left), const_cast<gInt&>(right));
 		return ret;
 	}
 
 	gInt operator-(const gInt& left, const gInt& right)
 	{
 		gInt ret;
-		mpz_sub(ret.value, left.value, right.value);
+		mpz_sub(ret, const_cast<gInt&>(left), const_cast<gInt&>(right));
 		return ret;
 	}
 
 	gInt operator*(const gInt& left, const gInt& right)
 	{
 		gInt ret;
-		mpz_mul(ret.value, left.value, right.value);
+		mpz_mul(ret, const_cast<gInt&>(left), const_cast<gInt&>(right));
 		return ret;
 	}
 
 	gInt operator/(const gInt& left, const gInt& right)
 	{
 		gInt ret;
-		mpz_div(ret.value, left.value, right.value);
+		mpz_div(ret, const_cast<gInt&>(left), const_cast<gInt&>(right));
 		return ret;
 	}
 
-
-
 	gInt& gInt::operator+=(const gInt& right)
 	{
-		mpz_add(value, value, right.value);
+		mpz_add(value, value, const_cast<gInt&>(right));
 		return *this;
 	}
 
 	gInt& gInt::operator-=(const gInt& right)
 	{
-		mpz_sub(value, value, right.value);
+		mpz_sub(value, value, const_cast<gInt&>(right));
 		return *this;
 	}
 
@@ -124,13 +110,39 @@ namespace gm3p
 
 	gInt& gInt::operator/=(const gInt& right)
 	{
-		mpz_div(value, value, right.value);
+		mpz_div(value, value, const_cast<gInt&>(right));
 		return *this;
+	}
+
+	gInt Mul2Exp(const gInt& value, const mp_bitcnt_t& exp)
+	{
+		gInt ret;
+		mpz_mul_2exp(ret, const_cast<gInt&>(value), exp);
+		return ret;
+	}
+
+	gInt Neg(const gInt& value)
+	{
+		gInt ret;
+		mpz_neg(ret, const_cast<gInt&>(value));
+		return ret;
+	}
+
+	gInt Abs(const gInt& value)
+	{
+		gInt ret;
+		mpz_abs(ret, const_cast<gInt&>(value));
+		return ret;
 	}
 
 	gInt::operator long int() const
 	{
 		return mpz_get_si(value);
+	}
+
+	gInt::operator mpz_t&()
+	{
+		return value;
 	}
 
 	unsigned long int gInt::ToUnsigned() const
