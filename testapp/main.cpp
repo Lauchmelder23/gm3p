@@ -17,7 +17,11 @@ int main(int argc, char** argv)
 
 	int d = Abs(c);
 	std::cout << d << std::endl;
-	std::cout << c.ToString(NULL, 2) << std::endl;
+	std::cout << c.ToString(NULL, 2) << std::endl << std::endl;
+
+	mpz_t& e = c;
+	mpz_mul_ui(e, e, 2);
+	std::cout << c << std::endl;
 
 	return 0;
 }
