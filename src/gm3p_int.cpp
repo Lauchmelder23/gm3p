@@ -8,28 +8,45 @@ namespace gm3p
 	}
 
 	gInt::gInt(mpz_t init) 
-		: gInt::gInt()
 	{
-		mpz_set(value, init);
+		mpz_init_set(value, init);
+	}
+
+	gInt::gInt(mpq_t init)
+	{
+		mpz_init(value);
+		mpz_set_q(value, init);
+	}
+
+	gInt::gInt(mpf_t init)
+	{
+		mpz_init(value);
+		mpz_set_f(value, init);
 	}
 
 	gInt::gInt(unsigned long int init) :
 		gInt::gInt()
 	{
-		mpz_set_ui(value, init);
+		mpz_init_set_ui(value, init);
 	}
 
 	gInt::gInt(long int init) :
 		gInt::gInt()
 	{
-		mpz_set_si(value, init);
+		mpz_init_set_si(value, init);
 	}
 
 	gInt::gInt(const char* init, int base) :
 		gInt::gInt()
 	{
-		mpz_set_str(value, init, base);
+		mpz_init_set_str(value, init, base);
 	}
+
+	gInt::gInt(double init)
+	{
+		mpz_init_set_d(value, init);
+	}
+
 
 	gInt::~gInt()
 	{
@@ -40,6 +57,17 @@ namespace gm3p
 
 
 	gInt& gInt::operator=(const gInt& other)
+	{
+		mpz_set(this->value, other.value);
+		return *this;
+	}
+
+	gInt::gInt(const gInt& other)
+	{
+		mpz_set(this->value, other.value);
+	}
+
+	gInt::gInt(gInt&& other)
 	{
 		mpz_set(this->value, other.value);
 	}
@@ -100,11 +128,39 @@ namespace gm3p
 		return *this;
 	}
 
+	gInt::operator long int() const
+	{
+		return mpz_get_si(value);
+	}
+
+	unsigned long int gInt::ToUnsigned() const
+	{
+		return mpz_get_ui(value);
+	}
+
+	char* gInt::ToString(char* buf, int base) const
+	{
+		return mpz_get_str(buf, base, value);
+	}
+
+	double gInt::ToDouble() const
+	{
+		return mpz_get_d(value);
+	}
+
+	double gInt::ToDouble(long int* exp) const
+	{
+		return mpz_get_d_2exp(exp, value);
+	}
+
 
 	std::ostream& operator<<(std::ostream& os, const gInt& value)
 	{
-		static char* buf;
-		gmp_asprintf(&buf, "%Zd", value);
-		os << buf;
+		os << value.ToString(NULL, 
+			(os.flags() & std::ios_base::dec) != 0 ? 10 :
+				(os.flags() & std::ios_base::hex) != 0 ? 16 : 
+					8
+		);
+		return os;
 	}
 }
